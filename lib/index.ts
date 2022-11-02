@@ -109,3 +109,16 @@ export function recursive<T, P extends [T, ...T[]], I extends P>(nth: (...previo
     length
   )
 }
+
+export function array<T>(array: T[]): Iterator<T> {
+  return sequence(
+    function (n: number): T {
+      return array[n]
+    },
+    array.length
+  )
+}
+
+export function elements<T>(...elements: T[]): Iterator<T> {
+  return array(elements)
+}
