@@ -84,13 +84,20 @@ export function arange(_start: number, _stop?: number, step: number = 1): Iterat
   const start = _stop === undefined ? 0 : _start
   const stop = _stop === undefined ? _start : _stop
 
+  return sequence((n: number) => start + n * step, (stop - start) / step)
+}
+
+export function sequence<T>(nth: (n: number) => T, length?: number, start?: number): Iterator<T>
+export function sequence<T>(nth: (n: number) => T, length: number = Infinity, start: number = 0): Iterator<T> {
   return {
-    next(): IteratorResult<number> {
-      if (((step > 0) && start >= stop) || ((step < 0) && start <= stop)) {
-        return { value: undefined, done: true }
+    next(): IteratorResult<T> {
+      if (!(start < length)) {
+        return { done: true, value: undefined }
       }
-      this.next = arange(start + step, stop, step).next
-      return { value: start }
+      this.next = sequence(nth, length, start + 1).next
+      return { value: nth(start) }
     }
   }
 }
+
+// export function iterator<T>(nth: (n0: T, ...previous: T[]) => T, ...initial): Iterator<T>
