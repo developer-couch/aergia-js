@@ -87,15 +87,15 @@ export function arange(_start: number, _stop?: number, step: number = 1): Iterat
   return sequence((n: number) => start + n * step, (stop - start) / step)
 }
 
-export function sequence<T>(nth: (n: number) => T, length?: number, start?: number): Iterator<T>
-export function sequence<T>(nth: (n: number) => T, length: number = Infinity, start: number = 0): Iterator<T> {
+export function sequence<T>(nth: (n: number) => T, length: number = Infinity): Iterator<T> {
+  let i = 0
+
   return {
     next(): IteratorResult<T> {
-      if (!(start < length)) {
+      if (!(i < length)) {
         return { done: true, value: undefined }
       }
-      this.next = sequence(nth, length, start + 1).next
-      return { value: nth(start) }
+      return { value: nth(i++) }
     }
   }
 }
