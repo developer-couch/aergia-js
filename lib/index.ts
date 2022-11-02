@@ -100,4 +100,12 @@ export function sequence<T>(nth: (n: number) => T, length: number = Infinity): I
   }
 }
 
-// export function iterator<T>(nth: (n0: T, ...previous: T[]) => T, ...initial): Iterator<T>
+export function recursive<T, P extends [T, ...T[]], I extends P>(nth: (...previous: P) => T, length: number = Infinity, ...initial: I): Iterator<T> {
+  return sequence(
+    function (): T {
+      initial.push(nth(...initial))
+      return initial.shift() as T
+    },
+    length
+  )
+}
